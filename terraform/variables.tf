@@ -19,17 +19,21 @@ variable "key_name" {
 } 
 
 variable "vpc_id" {
-  description = "ID or name of the VPC to launch the EC2 instance in"
-  default = "vpc-for-projects" 
-} 
+  description = "The VPC ID to launch the EC2 instance in"
+  type        = string
+  default     = "vpc-0f663d059ca1569ce"
+}
 
 variable "subnet_id" {
-  description = "ID or name of the subnet to associate with the EC2 instance"
-  default = "subnet-forreddit-01" 
-} 
-
-variable "security_group_ids" { 
-  description = "List of security group IDs or names to associate with the EC2 instance"
-  type = list(string) 
-  default = ["redditproject-sg"] 
+  description = "The Subnet ID to associate with the EC2 instance"
+  type        = string
+  default     = "subnet-0958b791aec1ccaee"
 }
+
+variable "security_group_ids" {
+  description = "List of Security Group IDs to associate with the EC2 instance"
+  type        = list(string)
+  default     = ["sg-0076f26bf6a7e3f39"]
+}
+
+
