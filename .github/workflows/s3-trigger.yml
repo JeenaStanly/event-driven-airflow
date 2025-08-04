@@ -1,0 +1,12 @@
+name: S3 Trigger DAG
+
+on:
+  repository_dispatch:
+    types: [s3-upload-trigger]
+
+jobs:
+  trigger-dag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo trigger
+        run: echo "Triggered by S3 upload event"
