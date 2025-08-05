@@ -16,7 +16,7 @@ jobs:
         run: |
           FILENAME="${{ github.event.client_payload.filename }}"
 
-          curl -X POST https://65381ea208ac.ngrok-free.app//api/v1/dags/my_final_etl_dag/dagRuns \
-          -H "Content-Type: application/json" \
-          -u admin:beVAPDwy4bKmgMaq \
-          -d "{\"conf\": {\"filename\": \"$FILENAME\"}}"
+          curl -X POST "${AIRFLOW_BASE_URL}/api/v2/dags/my_final_etl_dag/dagRuns" \
+            -H "Content-Type: application/json" \
+            -u "${AIRFLOW_USERNAME}:${AIRFLOW_PASSWORD}" \
+            -d "$(jq -n --arg filename "$FILENAME" '{conf: {filename: $filename}}')"
