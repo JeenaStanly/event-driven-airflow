@@ -16,7 +16,7 @@ jobs:
         run: |
           FILENAME="${{ github.event.client_payload.filename }}"
 
-          curl -X POST "$AIRFLOW_BASE_URL/api/v1/dags/my_final_etl_dag/dagRuns" \
+          curl -X POST "$AIRFLOW_BASE_URL/api/v2/dags/my_final_etl_dag/dagRuns" \
             -H "Content-Type: application/json" \
             -u "$AIRFLOW_USERNAME:$AIRFLOW_PASSWORD" \
             -d "{
