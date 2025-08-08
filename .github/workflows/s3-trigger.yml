@@ -12,12 +12,17 @@ jobs:
       AIRFLOW_USERNAME: ${{ secrets.AIRFLOW_USERNAME }}
       AIRFLOW_PASSWORD: ${{ secrets.AIRFLOW_PASSWORD }}
     steps:
+      - name: Install jq
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Get JWT Token
         id: get_token
         run: |
           TOKEN=$(curl -s -X POST "$AIRFLOW_BASE_URL/api/v1/security/login" \
             -H "Content-Type: application/json" \
-            -d "{\"username\": \"$AIRFLOW_USERNAME\", \"password\": \"$AIRFLOW_PASSWORD\"}" | jq -r '.access_token')
+            -d "{\"username\": \"$AIRFLOW_USERNAME\", \"password\": \"$AIRFLOW_PASSWORD\"}" \
+            | jq -r '.access_token')
           echo "token=$TOKEN" >> $GITHUB_OUTPUT
 
       - name: Trigger Airflow DAG via API
@@ -25,10 +30,11 @@ jobs:
           FILENAME="${{ github.event.client_payload.filename }}"
           TOKEN="${{ steps.get_token.outputs.token }}"
 
-          curl -X POST "$AIRFLOW_BASE_URL/api/v2/dags/my_final_etl_dag/dagRuns" \
+          curl -s -X POST "$AIRFLOW_BASE_URL/api/v1/dags/my_final_etl_dag/dagRuns" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $TOKEN" \
             -d "{
                   \"conf\": {
                     \"filename\": \"$FILENAME\"
-                  
+                  }
+                }"
