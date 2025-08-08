@@ -23,18 +23,20 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{\"username\": \"$AIRFLOW_USERNAME\", \"password\": \"$AIRFLOW_PASSWORD\"}" \
             | jq -r '.access_token')
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
 
       - name: Trigger Airflow DAG via API
         run: |
           FILENAME="${{ github.event.client_payload.filename }}"
           TOKEN="${{ steps.get_token.outputs.token }}"
+          LOGICAL_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          echo "🚀 Triggering DAG with logical_date: $LOGICAL_DATE and filename: $FILENAME"
 
           curl -s -X POST "$AIRFLOW_BASE_URL/api/v2/dags/my_final_etl_dag/dagRuns" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $TOKEN" \
-            -d "{
-                  \"conf\": {
-                    \"filename\": \"$FILENAME\"
-                  }
-                }"
+            -d "$(jq -n \
+              --arg logical_date "$LOGICAL_DATE" \
+              --arg filename "$FILENAME" \
+              '{logical_date: $logical_date, conf: {filename: $filename}}')"
