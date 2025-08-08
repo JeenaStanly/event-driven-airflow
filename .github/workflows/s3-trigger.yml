@@ -30,7 +30,7 @@ jobs:
           FILENAME="${{ github.event.client_payload.filename }}"
           TOKEN="${{ steps.get_token.outputs.token }}"
 
-          curl -s -X POST "$AIRFLOW_BASE_URL/api/v1/dags/my_final_etl_dag/dagRuns" \
+          curl -s -X POST "$AIRFLOW_BASE_URL/api/v2/dags/my_final_etl_dag/dagRuns" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $TOKEN" \
             -d "{
