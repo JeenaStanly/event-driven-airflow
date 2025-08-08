@@ -19,7 +19,7 @@ jobs:
       - name: Get JWT Token
         id: get_token
         run: |
-          TOKEN=$(curl -s -X POST "$AIRFLOW_BASE_URL/api/v1/security/login" \
+          TOKEN=$(curl -s -X POST "$AIRFLOW_BASE_URL/auth/token" \
             -H "Content-Type: application/json" \
             -d "{\"username\": \"$AIRFLOW_USERNAME\", \"password\": \"$AIRFLOW_PASSWORD\"}" \
             | jq -r '.access_token')
